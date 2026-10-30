@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 430px;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 35px #00000030;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin: 25px 0 8px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #6c63ff;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #5148df;
+        }
+
+        #result {
+            display: none;
+            margin-top: 25px;
+        }
+
+        .age-box {
+            display: flex;
+            gap: 8px;
+        }
+
+        .age-item {
+            flex: 1;
+            background: #f0efff;
+            padding: 15px 5px;
+            border-radius: 10px;
+        }
+
+        .age-item span {
+            display: block;
+            color: #6c63ff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .age-item small {
+            color: #555;
+        }
+
+        #message {
+            color: #d93025;
+            margin-top: 12px;
+        }
+
+        footer {
+            margin-top: 25px;
+            color: #888;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎂 Age Calculator</h1>
+        <p>Calculate your exact age in years, months and days.</p>
+
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob">
+
+        <button onclick="calculateAge()">Calculate Age</button>
+
+        <div id="message" role="alert"></div>
+
+        <div id="result" aria-live="polite">
+            <h2>Your Age</h2>
+
+            <div class="age-box">
+                <div class="age-item">
+                    <span id="years">0</span>
+                    <small>Years</small>
+                </div>
+                <div class="age-item">
+                    <span id="months">0</span>
+                    <small>Months</small>
+                </div>
+                <div class="age-item">
+                    <span id="days">0</span>
+                    <small>Days</small>
+                </div>
+            </div>
+        </div>
+
+        <footer>Simple • Fast • Free</footer>
+    </div>
+
+    <script>
+        const dobInput = document.getElementById("dob");
+
+        function calculateAge() {
+            const message = document.getElementById("message");
+            const result = document.getElementById("result");
+
+            message.textContent = "";
+            result.style.display = "none";
+
+            if (!dobInput.value) {
+                message.textContent = "Please select your date of birth.";
+                return;
+            }
+
+            const [year, month, day] =
+                dobInput.value.split("-").map(Number);
+
+            const birthDate = new Date(year, month - 1, day);
+            const today = new Date();
+
+            today.setHours(0, 0, 0, 0);
+
+            if (
+                birthDate.getFullYear() !== year ||
+                birthDate.getMonth() !== month - 1 ||
+                birthDate.getDate() !== day ||
+                birthDate > today
+            ) {
+                message.textContent = "Please select a valid past date.";
+                return;
+            }
+
+            let years = today.getFullYear() - year;
+            let months = today.getMonth() - (month - 1);
+            let days = today.getDate() - day;
+
+            if (days < 0) {
+                months--;
+
+                const previousMonthDays = new Date(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    0
+                ).getDate();
+
+                days += previousMonthDays;
+            }
+
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            document.getElementById("years").textContent = years;
+            document.getElementById("months").textContent = months;
+            document.getElementById("days").textContent = days;
+
+            result.style.display = "block";
+        }
+    </script>
+</body>
+</html>
